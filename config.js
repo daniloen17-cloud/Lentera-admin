@@ -1,13 +1,4 @@
-// =====================================================================
-// LENTERA ADMIN — config.js
-// Isi dua nilai ini dari Supabase: Project Settings > API
-//   - Project URL            (contoh: https://abcdxyz.supabase.co)
-//   - anon public key        (kunci "anon" / "publishable", BUKAN service_role!)
-// Kunci anon memang aman ditaruh di sini: yang menjaga data adalah
-// login admin + aturan Row Level Security di database.
-// JANGAN PERNAH memasukkan kunci "service_role" atau kunci Bunny di file ini.
-// =====================================================================
 window.LENTERA_CONFIG = {
-  SUPABASE_URL: "ISI_PROJECT_URL",
-  SUPABASE_ANON_KEY: "ISI_ANON_KEY",
+  SUPABASE_URL: "https://ioatwrpfapemkfhszrnf.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlvYXR3cnBmYXBlbWtmaHN6cm5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQyODYwMzAsImV4cCI6MjEwOTg2MjAzMH0.CEc1eD1E7Y_kcJ_LNJ7vKw6oGo1GSCjkW1TcU7QGE8c",
 };
