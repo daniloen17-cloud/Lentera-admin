@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Lentera Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F3F1; --surface:#fff; --alt:#EDE8E4; --text:#211C28; --muted:#6B6474;
+    --accent:#1F8A73; --on-accent:#fff; --border:#E2DBD6; --danger:#C0392B; --ok:#1F8A73; --warn:#B7791F;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#16131D; --surface:#1F1B29; --alt:#2A2536; --text:#F1EDF5; --muted:#A59DB0;
+      --accent:#4FD1B0; --on-accent:#0B2A23; --border:#332D40; --danger:#FF8A7A; --ok:#4FD1B0; --warn:#F0B95A;
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 "Instrument Sans",system-ui,sans-serif}
+  h1,h2,h3{font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;line-height:1.15;margin:0}
+  main{max-width:760px;margin:0 auto;padding:16px 16px 80px}
+  header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--border)}
+  header.top .in{max-width:760px;margin:0 auto;padding:12px 16px 0}
+  .brand{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .brand h1{font-size:22px}
+  .tabs{display:flex;gap:4px;margin-top:8px;overflow-x:auto}
+  .tab{appearance:none;border:0;background:none;color:var(--muted);font:600 14px "Instrument Sans",system-ui,sans-serif;padding:10px 14px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+  .tab.on{color:var(--accent);border-color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;margin:12px 0}
+  .row{display:flex;gap:10px;align-items:center}
+  .row.wrap{flex-wrap:wrap}
+  .grow{flex:1;min-width:0}
+  .muted{color:var(--muted);font-size:13px}
+  label.f{display:block;margin:12px 0 0;font-size:13px;font-weight:600;color:var(--muted)}
+  input[type=text],input[type=email],input[type=password],input[type=number],input[type=search],select,textarea{
+    width:100%;margin-top:6px;padding:11px 14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);font:15px "Instrument Sans",system-ui,sans-serif;
+  }
+  textarea{min-height:110px;resize:vertical}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0}
+  .btn{appearance:none;border:0;border-radius:999px;padding:11px 20px;font:600 14px "Instrument Sans",system-ui,sans-serif;cursor:pointer;background:var(--accent);color:var(--on-accent)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn.danger{background:transparent;color:var(--danger);border:1px solid var(--border)}
+  .btn.small{padding:7px 14px;font-size:13px}
+  .btn:disabled{opacity:.5;cursor:default}
+  .chip{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--alt);color:var(--text)}
+  .chip.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+  .chip.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+  .chip.off{opacity:.6}
+  .swatch{width:46px;height:62px;border-radius:10px;flex:none}
+  .film{display:flex;gap:12px;align-items:center;cursor:pointer}
+  .film h3{font-size:17px}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tile{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px}
+  .tile b{display:block;font:700 22px "Bricolage Grotesque",system-ui,sans-serif;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--muted);font-weight:600}
+  .scroll{overflow-x:auto}
+  .bar{height:8px;border-radius:99px;background:var(--alt);overflow:hidden;margin-top:6px}
+  .bar>i{display:block;height:100%;background:var(--accent);width:0}
+  .check{display:flex;gap:10px;align-items:center;margin-top:12px;font-weight:500}
+  .check input{width:20px;height:20px}
+  .notice{background:var(--alt);border-radius:14px;padding:12px 14px;font-size:13px;margin:12px 0}
+  .err{color:var(--danger);font-size:13px;margin-top:10px}
+  #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;z-index:20}
+  #toast.show{opacity:1}
+  .center{min-height:100vh;display:grid;place-items:center;padding:20px}
+  .login{width:100%;max-width:380px}
+  details summary{cursor:pointer;font-weight:600;padding:6px 0}
+</style>
+</head>
+<body>
+<div id="app"><div class="center"><span class="muted">Memuat…</span></div></div>
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.1.0/dist/tus.min.js"></script>
+<script>
+"use strict";
+
+/* ------------------------------------------------------------------ util */
+const $app = document.getElementById("app");
+const h = (tag, props = {}, ...kids) => {
+  const e = document.createElement(tag);
+  let value;
+  for (const [k, v] of Object.entries(props || {})) {
+    if (k === "class") e.className = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if (k === "value") value = v;
+    else if (k === "checked") e.checked = !!v;
+    else if (v === true) e.setAttribute(k, "");
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const c of kids.flat(Infinity)) {
+    if (c == null || c === false) continue;
+    e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+  if (value !== undefined) e.value = value;
+  return e;
+};
+const rupiah = (n) => "Rp" + String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const BULAN = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+const tgl = (d) => { d = new Date(d); return `${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`; };
+const tglJam = (d) => { d = new Date(d); return `${tgl(d)} ${String(d.getHours()).padStart(2,"0")}.${String(d.getMinutes()).padStart(2,"0")}`; };
+const durasi = (s) => { s = Math.round(s || 0); const m = Math.floor(s / 60), r = s % 60; return `${m}:${String(r).padStart(2,"0")}`; };
+const mount = (...nodes) => { $app.replaceChildren(...nodes); window.scrollTo(0, 0); };
+
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 3200);
+}
+const errText = (e) => (e && (e.message || e.error_description)) ? e.message || e.error_description : String(e);
+
+/* ------------------------------------------------------------- supabase */
+const CFG = window.LENTERA_CONFIG || {};
+const configured = CFG.SUPABASE_URL && !CFG.SUPABASE_URL.startsWith("ISI_") && CFG.SUPABASE_ANON_KEY && !CFG.SUPABASE_ANON_KEY.startsWith("ISI_");
+let sb = null;
+const S = { tiers: [], plans: [], films: [], tab: "film" };
+
+async function callFn(name, body) {
+  const { data, error } = await sb.functions.invoke(name, { body });
+  if (error) {
+    let msg = error.message;
+    try { const j = await error.context.json(); if (j && j.message) msg = j.message; } catch (_) {}
+    throw new Error(msg);
+  }
+  if (data && data.ok === false) throw new Error(data.message || "Gagal.");
+  return data;
+}
+
+/* ---------------------------------------------------------------- login */
+function viewConfigError() {
+  mount(h("div", { class: "center" }, h("div", { class: "card login" },
+    h("h2", {}, "Konfigurasi belum diisi"),
+    h("p", { class: "muted" }, "Buka file config.js di repo ini, lalu isi SUPABASE_URL dan SUPABASE_ANON_KEY (lihat panduan)."))));
+}
+
+function viewLogin(msg) {
+  const email = h("input", { type: "email", placeholder: "Email admin", autocomplete: "username" });
+  const pass = h("input", { type: "password", placeholder: "Password", autocomplete: "current-password" });
+  const err = h("div", { class: "err" }, msg || "");
+  const btn = h("button", { class: "btn", style: "width:100%;margin-top:16px", onclick: go }, "Masuk");
+  async function go() {
+    btn.disabled = true; err.textContent = "";
+    const { error } = await sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
+    if (error) { err.textContent = /invalid/i.test(error.message) ? "Email atau password salah." : error.message; btn.disabled = false; return; }
+    boot();
+  }
+  pass.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+  mount(h("div", { class: "center" }, h("div", { class: "card login" },
+    h("h2", {}, "Lentera Admin"), h("p", { class: "muted" }, "Khusus pengelola."),
+    h("label", { class: "f" }, "Email", email), h("label", { class: "f" }, "Password", pass), err, btn)));
+}
+
+/* ----------------------------------------------------------------- boot */
+async function boot() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return viewLogin();
+  const { data: adm, error } = await sb.from("admins").select("user_id").eq("user_id", session.user.id).maybeSingle();
+  if (error) return viewLogin("Gagal memeriksa akses: " + error.message);
+  if (!adm) {
+    await sb.auth.signOut();
+    return viewLogin("Akun ini bukan admin.");
+  }
+  await loadRefs();
+  render();
+}
+
+async function loadRefs() {
+  const [t, p, f] = await Promise.all([
+    sb.from("price_tiers").select("*").order("tipe").order("harga"),
+    sb.from("plans").select("*").order("harga"),
+    sb.from("films").select("*").order("created_at", { ascending: false }),
+  ]);
+  for (const r of [t, p, f]) if (r.error) throw r.error;
+  S.tiers = t.data; S.plans = p.data; S.films = f.data;
+}
+
+function shell(content) {
+  const tab = (id, label) => h("button", { class: "tab" + (S.tab === id ? " on" : ""), onclick: () => { S.tab = id; render(); } }, label);
+  return [
+    h("header", { class: "top" }, h("div", { class: "in" },
+      h("div", { class: "brand" }, h("h1", {}, "Lentera Admin"),
+        h("button", { class: "btn ghost small", onclick: async () => { await sb.auth.signOut(); boot(); } }, "Keluar")),
+      h("div", { class: "tabs" }, tab("film", "Film"), tab("jual", "Penjualan"), tab("harga", "Harga & paket")))),
+    h("main", {}, content),
+  ];
+}
+
+function render() {
+  const view = S.tab === "film" ? viewFilms : S.tab === "jual" ? viewSales : viewPrices;
+  mount(...shell(h("div", {}, "")));
+  view();
+}
+function setContent(node) { document.querySelector("main").replaceChildren(node); }
+
+/* ----------------------------------------------------------- daftar film */
+function filmChips(f) {
+  return [
+    h("span", { class: "chip " + (f.aktif ? "ok" : "off") }, f.aktif ? "Tayang" : "Disembunyikan"),
+    f.masuk_langganan && h("span", { class: "chip" }, "Langganan"),
+    f.unggulan && h("span", { class: "chip warn" }, "Unggulan"),
+  ];
+}
+const swatch = (hue) => h("div", { class: "swatch", style: `background:linear-gradient(135deg,hsl(${hue} 55% 36%),hsl(${(hue + 38) % 360} 60% 20%))` });
+
+function viewFilms() {
+  const q = h("input", { type: "search", placeholder: "Cari judul…" });
+  const list = h("div", {});
+  const draw = () => {
+    const term = q.value.trim().toLowerCase();
+    const items = S.films.filter((f) => !term || f.judul.toLowerCase().includes(term));
+    list.replaceChildren(...(items.length ? items.map((f) =>
+      h("div", { class: "card film", onclick: () => viewFilmEdit(f.id) },
+        swatch(f.hue),
+        h("div", { class: "grow" }, h("h3", {}, f.judul),
+          h("div", { class: "muted" }, `${f.negara} · ${f.tahun || "—"} · ${f.jumlah_episode} episode`),
+          h("div", { class: "row wrap", style: "margin-top:6px;gap:6px" }, filmChips(f))))) :
+      [h("p", { class: "muted" }, "Belum ada film.")]));
+  };
+  q.addEventListener("input", draw);
+  setContent(h("div", {},
+    h("div", { class: "row" }, h("div", { class: "grow" }, q),
+      h("button", { class: "btn", onclick: () => viewFilmEdit(null) }, "+ Film")),
+    list));
+  draw();
+}
+
+/* ------------------------------------------------------------- edit film */
+async function viewFilmEdit(id) {
+  const isNew = !id;
+  const f = isNew ? { judul: "", negara: "Drakor", genre: [], tahun: new Date().getFullYear(), jumlah_episode: 1, sinopsis: "", poster_url: "", backdrop_url: "", hue: 160, sku_beli: null, sku_sewa: null, masuk_langganan: false, unggulan: false, aktif: true }
+                  : S.films.find((x) => x.id === id);
+  const el = {};
+  const tiersOf = (tipe) => S.tiers.filter((t) => t.tipe === tipe && (t.aktif || t.sku === f[tipe === "buy" ? "sku_beli" : "sku_sewa"]));
+  const tierSelect = (tipe, cur) => h("select", { value: cur || "" },
+    h("option", { value: "" }, "— tidak dijual —"),
+    tiersOf(tipe).map((t) => h("option", { value: t.sku }, `${rupiah(t.harga)}  (${t.sku})`)));
+
+  el.judul = h("input", { type: "text", value: f.judul, maxlength: 120 });
+  el.negara = h("select", { value: f.negara }, h("option", { value: "Drakor" }, "Drakor"), h("option", { value: "Dracin" }, "Dracin"));
+  el.genre = h("input", { type: "text", value: (f.genre || []).join(", "), placeholder: "Romansa, Drama, Misteri" });
+  el.tahun = h("input", { type: "number", value: f.tahun ?? "", min: 1950, max: 2100 });
+  el.eps = h("input", { type: "number", value: f.jumlah_episode, min: 1, max: 500 });
+  el.sinopsis = h("textarea", { value: f.sinopsis || "" });
+  el.poster = h("input", { type: "text", value: f.poster_url || "", placeholder: "https://… (boleh kosong)" });
+  el.backdrop = h("input", { type: "text", value: f.backdrop_url || "", placeholder: "https://… (boleh kosong)" });
+  el.hue = h("input", { type: "number", value: f.hue, min: 0, max: 360 });
+  el.beli = tierSelect("buy", f.sku_beli);
+  el.sewa = tierSelect("rent", f.sku_sewa);
+  el.sub = h("input", { type: "checkbox", checked: f.masuk_langganan });
+  el.unggulan = h("input", { type: "checkbox", checked: f.unggulan });
+  el.aktif = h("input", { type: "checkbox", checked: f.aktif });
+  const err = h("div", { class: "err" });
+  const saveBtn = h("button", { class: "btn", onclick: save }, isNew ? "Simpan film" : "Simpan perubahan");
+  const epBox = h("div", {});
+
+  async function save() {
+    err.textContent = "";
+    const judul = el.judul.value.trim();
+    if (!judul) { err.textContent = "Judul wajib diisi."; return; }
+    const payload = {
+      judul, negara: el.negara.value,
+      genre: el.genre.value.split(",").map((s) => s.trim()).filter(Boolean),
+      tahun: el.tahun.value ? Number(el.tahun.value) : null,
+      jumlah_episode: Math.max(1, Number(el.eps.value) || 1),
+      sinopsis: el.sinopsis.value.trim() || null,
+      poster_url: el.poster.value.trim() || null,
+      backdrop_url: el.backdrop.value.trim() || null,
+      hue: Math.min(360, Math.max(0, Number(el.hue.value) || 0)),
+      sku_beli: el.beli.value || null, sku_sewa: el.sewa.value || null,
+      masuk_langganan: el.sub.checked, unggulan: el.unggulan.checked, aktif: el.aktif.checked,
+    };
+    saveBtn.disabled = true;
+    const q = isNew ? sb.from("films").insert(payload).select().single()
+                    : sb.from("films").update(payload).eq("id", id).select().single();
+    const { data, error } = await q;
+    saveBtn.disabled = false;
+    if (error) { err.textContent = "Gagal menyimpan: " + error.message; return; }
+    toast("Tersimpan.");
+    await loadRefs();
+    if (isNew) viewFilmEdit(data.id);
+  }
+
+  async function remove() {
+    if (!confirm(`Hapus film "${f.judul}" beserta semua episodenya? Tidak bisa dibatalkan.\n\nFilm yang sudah pernah dibeli tidak bisa dihapus; sembunyikan saja.`)) return;
+    const { error } = await sb.from("films").delete().eq("id", id);
+    if (error) { toast("Tidak bisa dihapus (kemungkinan sudah ada pembelian). Sembunyikan saja."); return; }
+    toast("Film dihapus."); await loadRefs(); S.tab = "film"; render();
+  }
+
+  const lab = (t, input, hint) => h("label", { class: "f" }, t, input, hint && h("div", { class: "muted", style: "font-weight:400;margin-top:4px" }, hint));
+  mount(...shell(h("div", {},
+    h("div", { class: "row", style: "margin:4px 0 8px" },
+      h("button", { class: "btn ghost small", onclick: () => { S.tab = "film"; render(); } }, "← Kembali"),
+      h("h2", { class: "grow", style: "font-size:20px" }, isNew ? "Film baru" : "Edit film")),
+    h("div", { class: "card" },
+      lab("Judul", el.judul),
+      h("div", { class: "row" }, h("div", { class: "grow" }, lab("Negara", el.negara)), h("div", { class: "grow" }, lab("Tahun", el.tahun))),
+      lab("Genre", el.genre, "Pisahkan dengan koma."),
+      lab("Jumlah episode", el.eps),
+      lab("Sinopsis", el.sinopsis),
+      lab("Link poster (2:3)", el.poster, "Boleh kosong: app memakai gradien warna."),
+      lab("Link gambar lebar (16:9)", el.backdrop),
+      lab("Warna gradien (0–360)", el.hue, "Dipakai kalau poster kosong."),
+    ),
+    h("div", { class: "card" },
+      h("h3", { style: "font-size:17px" }, "Harga & akses"),
+      lab("Harga beli permanen", el.beli),
+      lab("Harga sewa 48 jam", el.sewa),
+      h("div", { class: "notice" }, "Harga dipilih dari daftar tingkat harga (tab Harga & paket). Tiap tingkat harus sudah dibuat sebagai produk di Google Play Console."),
+      h("label", { class: "check" }, el.sub, "Masuk paket langganan"),
+      h("label", { class: "check" }, el.unggulan, "Tampilkan di film unggulan (Beranda)"),
+      h("label", { class: "check" }, el.aktif, "Tayang (tampil di app)"),
+      err,
+      h("div", { class: "row wrap", style: "margin-top:16px" }, saveBtn, !isNew && h("button", { class: "btn danger", onclick: remove }, "Hapus film"))),
+    !isNew && h("div", { class: "card" }, h("h3", { style: "font-size:17px" }, "Episode & video"), epBox),
+  )));
+  if (!isNew) renderEpisodes(epBox, f);
+}
+
+/* --------------------------------------------------------------- episode */
+async function renderEpisodes(box, film) {
+  box.replaceChildren(h("p", { class: "muted" }, "Memuat episode…"));
+  const { data: eps, error } = await sb.from("episodes").select("*").eq("film_id", film.id).order("nomor");
+  if (error) { box.replaceChildren(h("p", { class: "err" }, error.message)); return; }
+  const ids = eps.map((e) => e.id);
+  const vids = {};
+  if (ids.length) {
+    const { data: vv } = await sb.from("episode_videos").select("*").in("episode_id", ids);
+    for (const v of vv || []) vids[v.episode_id] = v.bunny_video_id;
+  }
+  const have = new Set(eps.map((e) => e.nomor));
+  const missing = [];
+  for (let n = 1; n <= film.jumlah_episode; n++) if (!have.has(n)) missing.push(n);
+
+  const rows = eps.map((e) => {
+    const vid = vids[e.id];
+    return h("div", { class: "card", style: "margin:8px 0;padding:12px" },
+      h("div", { class: "row" },
+        h("div", { class: "grow" }, h("b", {}, `Ep ${e.nomor}`), e.judul && ` · ${e.judul}`,
+          h("div", { class: "muted" }, e.durasi_detik ? durasi(e.durasi_detik) : "durasi —")),
+        h("span", { class: "chip " + (vid ? "ok" : "warn") }, vid ? "Video ada" : "Belum ada video"),
+        h("button", { class: "btn ghost small", onclick: () => viewEpisodeEdit(film, e, vid, box) }, "Atur")));
+  });
+
+  box.replaceChildren(
+    missing.length ? h("div", { class: "notice" }, `Episode ${missing[0]}–${missing[missing.length - 1]} belum dibuat. `,
+      h("button", { class: "btn small", onclick: async () => {
+        const { error: e2 } = await sb.from("episodes").insert(missing.map((n) => ({ film_id: film.id, nomor: n, judul: `Episode ${n}` })));
+        if (e2) return toast("Gagal: " + e2.message);
+        renderEpisodes(box, film);
+      } }, `Buat ${missing.length} episode`)) : null,
+    ...(rows.length ? rows : [h("p", { class: "muted" }, "Belum ada episode.")]));
+}
+
+function viewEpisodeEdit(film, ep, vid, box) {
+  const judul = h("input", { type: "text", value: ep.judul || "" });
+  const dur = h("input", { type: "number", value: ep.durasi_detik ?? "", min: 0 });
+  const vidInput = h("input", { type: "text", value: vid || "", placeholder: "ID video dari Bunny (guid)" });
+  const file = h("input", { type: "file", accept: "video/*" });
+  const bar = h("i", {}); const prog = h("div", { class: "bar", style: "display:none" }, bar);
+  const status = h("div", { class: "muted", style: "margin-top:6px" });
+  const err = h("div", { class: "err" });
+  const upBtn = h("button", { class: "btn", onclick: upload }, "Upload ke Bunny");
+  let currentVid = vid || "";
+
+  async function persist(videoId) {
+    const d = dur.value === "" ? null : Math.round(Number(dur.value));
+    const { error: e1 } = await sb.from("episodes").update({ judul: judul.value.trim() || null, durasi_detik: d }).eq("id", ep.id);
+    if (e1) throw e1;
+    const v = (videoId ?? vidInput.value).trim();
+    if (v) { const { error: e2 } = await sb.from("episode_videos").upsert({ episode_id: ep.id, bunny_video_id: v }, { onConflict: "episode_id" }); if (e2) throw e2; }
+    else { const { error: e3 } = await sb.from("episode_videos").delete().eq("episode_id", ep.id); if (e3) throw e3; }
+  }
+
+  async function save() {
+    err.textContent = "";
+    try { await persist(); toast("Episode tersimpan."); back(); } catch (e) { err.textContent = "Gagal: " + errText(e); }
+  }
+  function back() { viewFilmEdit(film.id); }
+
+  async function pollLength(videoId) {
+    for (let i = 0; i < 40; i++) {
+      await new Promise((r) => setTimeout(r, 6000));
+      try {
+        const { video } = await callFn("admin-bunny", { action: "get_video", video_id: videoId });
+        status.textContent = `Bunny: status ${video.status}, encode ${video.encodeProgress ?? 0}%` + (video.length ? `, durasi ${durasi(video.length)}` : "");
+        if (video.length > 0) { dur.value = Math.round(video.length); await persist(videoId); toast("Durasi terisi otomatis."); return; }
+      } catch (_) { return; }
+    }
+  }
+
+  async function upload() {
+    err.textContent = "";
+    const fl = file.files[0];
+    if (!fl) { err.textContent = "Pilih file video dulu."; return; }
+    upBtn.disabled = true;
+    try {
+      status.textContent = "Menyiapkan upload…";
+      const t = await callFn("admin-bunny", { action: "create_upload", title: `${film.judul} - Episode ${ep.nomor}` });
+      currentVid = t.video_id; vidInput.value = t.video_id;
+      prog.style.display = "block";
+      await new Promise((resolve, reject) => {
+        const u = new tus.Upload(fl, {
+          endpoint: "https://video.bunnycdn.com/tusupload",
+          retryDelays: [0, 3000, 5000, 10000, 20000],
+          headers: { AuthorizationSignature: t.signature, AuthorizationExpire: String(t.expire), VideoId: t.video_id, LibraryId: String(t.library_id) },
+          metadata: { filetype: fl.type || "video/mp4", title: `${film.judul} - Episode ${ep.nomor}` },
+          onError: reject,
+          onProgress: (a, b) => { const p = Math.round((a / b) * 100); bar.style.width = p + "%"; status.textContent = `Mengunggah… ${p}%`; },
+          onSuccess: resolve,
+        });
+        u.start();
+      });
+      status.textContent = "Upload selesai. Bunny sedang memproses video…";
+      await persist(currentVid);
+      toast("Video terpasang ke episode.");
+      pollLength(currentVid);
+    } catch (e) {
+      err.textContent = "Upload gagal: " + errText(e);
+    }
+    upBtn.disabled = false;
+  }
+
+  mount(...shell(h("div", {},
+    h("div", { class: "row", style: "margin:4px 0 8px" },
+      h("button", { class: "btn ghost small", onclick: back }, "← Kembali"),
+      h("h2", { class: "grow", style: "font-size:20px" }, `${film.judul} · Ep ${ep.nomor}`)),
+    h("div", { class: "card" },
+      h("label", { class: "f" }, "Judul episode", judul),
+      h("label", { class: "f" }, "Durasi (detik)", dur),
+      h("label", { class: "f" }, "ID video Bunny", vidInput),
+      h("div", { class: "muted", style: "margin-top:4px" }, "Isi manual kalau video sudah kamu upload lewat dashboard Bunny, atau biarkan terisi otomatis setelah upload di bawah."),
+      h("div", { class: "row wrap", style: "margin-top:16px" }, h("button", { class: "btn", onclick: save }, "Simpan"))),
+    h("div", { class: "card" },
+      h("h3", { style: "font-size:17px" }, "Upload video"),
+      h("p", { class: "muted" }, "Pilih file video (MP4 disarankan). Jangan tutup halaman ini sampai 100%. Dari HP, pakai Wi-Fi."),
+      file, h("div", { style: "margin-top:12px" }, upBtn), prog, status, err),
+  )));
+}
+
+/* ------------------------------------------------------------- penjualan */
+async function viewSales() {
+  setContent(h("p", { class: "muted" }, "Memuat laporan…"));
+  let days = 30, hideTest = true, rows = [];
+  const wrap = h("div", {});
+  async function load() {
+    const { data, error } = await sb.rpc("admin_sales", { p_days: days });
+    if (error) { wrap.replaceChildren(h("p", { class: "err" }, "Gagal memuat: " + error.message)); return; }
+    rows = data; draw();
+  }
+  function draw() {
+    const use = rows.filter((r) => !(hideTest && r.is_test));
+    const filmRows = use.filter((r) => r.jenis === "film" && r.status === "active");
+    const subRows = use.filter((r) => r.jenis === "langganan");
+    const now = Date.now();
+    const subActive = subRows.filter((r) => ["active", "grace", "canceled"].includes(r.status) && new Date(r.berlaku_sampai) > now);
+    const sum = (a) => a.reduce((s, r) => s + (r.harga || 0), 0);
+    const bayar = (t) => filmRows.filter((r) => r.tipe === t);
+
+    const sel = h("select", { value: String(days), onchange: (e) => { days = Number(e.target.value); load(); } },
+      [7, 30, 90, 365].map((d) => h("option", { value: String(d) }, `${d} hari terakhir`)));
+    const hide = h("input", { type: "checkbox", checked: hideTest, onchange: (e) => { hideTest = e.target.checked; draw(); } });
+
+    const csv = () => {
+      const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const head = ["waktu", "jenis", "judul", "tipe", "email", "harga", "status", "berlaku_sampai", "uji"];
+      const lines = [head.join(",")].concat(use.map((r) => [r.waktu, r.jenis, r.judul, r.tipe, r.email, r.harga, r.status, r.berlaku_sampai, r.is_test].map(esc).join(",")));
+      const a = h("a", { href: URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv" })), download: "penjualan-lentera.csv" });
+      document.body.append(a); a.click(); a.remove();
+    };
+
+    wrap.replaceChildren(
+      h("div", { class: "row wrap" }, h("div", { class: "grow" }, sel), h("button", { class: "btn ghost small", onclick: csv }, "Unduh CSV")),
+      h("label", { class: "check" }, hide, "Sembunyikan transaksi uji (akun tester)"),
+      h("div", { class: "tiles", style: "margin-top:12px" },
+        tile("Penjualan film (kotor)", rupiah(sum(filmRows))),
+        tile("Transaksi film", String(filmRows.length)),
+        tile("Beli permanen", `${bayar("buy").length} · ${rupiah(sum(bayar("buy")))}`),
+        tile("Sewa 48 jam", `${bayar("rent").length} · ${rupiah(sum(bayar("rent")))}`),
+        tile("Langganan aktif", String(subActive.length)),
+        tile("Langganan baru (periode)", String(subRows.length))),
+      h("div", { class: "notice" }, "Angka ini harga tampilan, sebelum potongan Google dan pajak. Langganan: tabel mencatat status terkini tiap pelanggan, bukan tiap pembayaran perpanjangan, jadi pendapatan langganan yang resmi lihat di Play Console (Laporan keuangan)."),
+      h("div", { class: "card scroll" }, h("table", {},
+        h("thead", {}, h("tr", {}, ["Waktu", "Item", "Pembeli", "Harga", "Status"].map((t) => h("th", {}, t)))),
+        h("tbody", {}, use.length ? use.map((r) => h("tr", {},
+          h("td", {}, tglJam(r.waktu)),
+          h("td", {}, h("div", {}, r.judul), h("div", { class: "muted" }, r.jenis === "film" ? (r.tipe === "buy" ? "Beli" : "Sewa") : "Langganan")),
+          h("td", {}, r.email || "—"),
+          h("td", {}, rupiah(r.harga)),
+          h("td", {}, h("span", { class: "chip " + (r.status === "active" ? "ok" : "") }, r.status), r.is_test && h("span", { class: "chip warn", style: "margin-left:4px" }, "uji")))) :
+          [h("tr", {}, h("td", { colspan: 5, class: "muted" }, "Belum ada transaksi."))]))));
+  }
+  const tile = (a, b) => h("div", { class: "tile" }, h("span", { class: "muted" }, a), h("b", {}, b));
+  setContent(wrap);
+  load();
+}
+
+/* ------------------------------------------------------- harga & paket */
+function viewPrices() {
+  const box = h("div", {});
+  const draw = () => {
+    const tierRow = (t) => h("tr", {},
+      h("td", {}, h("b", {}, t.sku), h("div", { class: "muted" }, t.tipe === "buy" ? "Beli" : "Sewa 48 jam")),
+      h("td", {}, rupiah(t.harga)),
+      h("td", {}, h("button", { class: "btn ghost small", onclick: async () => {
+        const { error } = await sb.from("price_tiers").update({ aktif: !t.aktif }).eq("sku", t.sku);
+        if (error) return toast("Gagal: " + error.message);
+        await loadRefs(); draw();
+      } }, t.aktif ? "Aktif" : "Nonaktif")));
+
+    const sku = h("input", { type: "text", placeholder: "contoh: buy_55k" });
+    const tipe = h("select", {}, h("option", { value: "buy" }, "Beli permanen"), h("option", { value: "rent" }, "Sewa 48 jam"));
+    const harga = h("input", { type: "number", placeholder: "55000", min: 1000 });
+    const err = h("div", { class: "err" });
+    const add = async () => {
+      err.textContent = "";
+      const s = sku.value.trim().toLowerCase();
+      if (!/^[a-z0-9_]{3,40}$/.test(s)) { err.textContent = "ID produk: huruf kecil, angka, dan _ saja (3–40 karakter)."; return; }
+      if (!Number(harga.value)) { err.textContent = "Isi harga."; return; }
+      const label = (tipe.value === "buy" ? "Beli " : "Sewa 48 jam ") + rupiah(Number(harga.value));
+      const { error } = await sb.from("price_tiers").insert({ sku: s, tipe: tipe.value, harga: Math.round(Number(harga.value)), label });
+      if (error) { err.textContent = "Gagal: " + error.message; return; }
+      toast("Tingkat harga ditambahkan."); await loadRefs(); draw();
+    };
+
+    box.replaceChildren(
+      h("div", { class: "notice" }, "Di Google Play, satu harga = satu produk dengan harga tetap. Untuk harga baru: buat dulu produk di Play Console dengan Product ID yang sama persis, baru tambahkan di sini. Mengubah angka harga produk yang sudah ada tidak bisa dilakukan dari sini."),
+      h("h3", {}, "Tingkat harga film"),
+      h("div", { class: "card scroll" }, h("table", {}, h("thead", {}, h("tr", {}, ["Produk", "Harga", "Status"].map((t) => h("th", {}, t)))), h("tbody", {}, S.tiers.map(tierRow)))),
+      h("details", { class: "card" }, h("summary", {}, "+ Tambah tingkat harga"),
+        h("label", { class: "f" }, "Product ID (sama dengan di Play Console)", sku),
+        h("label", { class: "f" }, "Jenis", tipe),
+        h("label", { class: "f" }, "Harga (Rp)", harga), err,
+        h("div", { style: "margin-top:14px" }, h("button", { class: "btn", onclick: add }, "Tambah"))),
+      h("h3", { style: "margin-top:20px" }, "Paket langganan"),
+      h("div", { class: "card scroll" }, h("table", {}, h("thead", {}, h("tr", {}, ["Paket", "Base plan ID", "Harga"].map((t) => h("th", {}, t)))),
+        h("tbody", {}, S.plans.map((p) => h("tr", {}, h("td", {}, p.nama), h("td", {}, p.base_plan_id), h("td", {}, rupiah(p.harga))))))),
+      h("p", { class: "muted" }, "Harga langganan diatur di Play Console (Monetize > Subscriptions). Angka di atas hanya untuk tampilan dan laporan; ubah lewat SQL Editor Supabase bila harga di Play Console berubah."));
+  };
+  setContent(box);
+  draw();
+}
+
+/* ----------------------------------------------------------------- start */
+if (!configured) viewConfigError();
+else {
+  sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+  boot().catch((e) => viewLogin("Terjadi masalah: " + errText(e)));
+}
+</script>
+</body>
+</html>
